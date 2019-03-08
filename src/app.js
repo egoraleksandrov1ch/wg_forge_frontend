@@ -102,6 +102,7 @@ export default (function () {
     function constructorUser(obj, elem) {
         let userLink = document.createElement('a');
         userLink.href = '#';
+        userLink.classList.add('btn');
         if (obj.gender == 'Male') {
             userLink.textContent = `Mr. ${obj.first_name} ${obj.last_name}`;
         }
@@ -110,6 +111,7 @@ export default (function () {
         }
         elem.appendChild(userLink);
     };
+
 
     init();
     // document.getElementById("app").innerHTML = "<h1>Hello WG Forge</h1>";
