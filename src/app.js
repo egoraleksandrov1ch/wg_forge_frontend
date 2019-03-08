@@ -3,8 +3,19 @@
 
 export default (function () {
 
+    let urlOrders = 'http://localhost:9000/api/orders.json';
+    let urlUsers = 'http://localhost:9000/api/users.json';
+    let urlCompanies = 'http://localhost:9000/api/companies.json';
+
+    let transactionID = document.getElementById('transactionID');
+    let userInfo = document.getElementById('userInfo');
+    let orderDate = document.getElementById('orderDate');
+    let orderAmount = document.getElementById('orderAmount');
+    let cardType = document.getElementById('cardType');
+    let location = document.getElementById('location');
+
     function init() {
-        getApi('http://localhost:9000/api/orders.json')
+        getApi(urlOrders)
 		.then( response => {
 			roundArr(response);
 		});
@@ -29,10 +40,14 @@ export default (function () {
     };
 
     function roundArr(obj) {
+        let lines = document.getElementById('lines');
+        lines.innerHTML = '';
+
         for(let i = 0; i <= obj.length; i++) {
             constructorTable(obj, i);
         };  
     };
+
     function roundUsers(obj, id, elem) {
         for (let i = 0; i <= obj.length; i++) {
             if (obj[i].id == id) {
@@ -54,7 +69,7 @@ export default (function () {
 
         let cellTwo = document.createElement('td');
         cellTwo.classList.add('user_data');
-        getApi('http://localhost:9000/api/users.json')
+        getApi(urlUsers)
 		.then( response => {
 			roundUsers(response, obj[i].user_id, cellTwo);
 		});
@@ -99,7 +114,6 @@ export default (function () {
     function constructorUser(obj, elem) {
         let userLink = document.createElement('a');
         userLink.href = '#';
-        userLink.classList.add('btn');
         if (obj.gender == 'Male') {
             userLink.textContent = `Mr. ${obj.first_name} ${obj.last_name}`;
         }
@@ -110,6 +124,7 @@ export default (function () {
 
         let infoUser = document.createElement('div');
         infoUser.classList.add('user-details');
+        infoUser.classList.add('list-group');
         infoUser.style.display = 'none';
         elem.appendChild(infoUser);
 
@@ -125,6 +140,7 @@ export default (function () {
 
     function constructorInfoUser(objUser, elem) {
         let birthday = document.createElement('p');
+        birthday.classList.add('list-group-item');
         if (objUser.birthday !== null) {
             let time = new Date(1970, 0, 1);
             time.setSeconds(objUser.birthday);
@@ -141,13 +157,14 @@ export default (function () {
         elem.appendChild(birthday);
 
         let photoUser = document.createElement('p');
+        photoUser.classList.add('list-group-item');
         let imgUser = document.createElement('img');
         imgUser.setAttribute('width', '100px');
         imgUser.setAttribute('src', objUser.avatar);
         photoUser.appendChild(imgUser);
         elem.appendChild(photoUser);
 
-        getApi('http://localhost:9000/api/companies.json')
+        getApi(urlCompanies)
 		.then( response => {
             // console.log(objUser);
             for (let i = 0; i <= response.length; i++) {
@@ -156,6 +173,7 @@ export default (function () {
                 }
                 else if (objUser.company_id == null) {
                     let companyUser = document.createElement('p');
+                    companyUser.classList.add('list-group-item');
                     companyUser.textContent = 'Company: missing.';
                     elem.appendChild(companyUser);
                     break;
@@ -166,21 +184,175 @@ export default (function () {
 
     function constructorCompanies(obj, elem) {
         let companyUser = document.createElement('p');
+        companyUser.classList.add('list-group-item');
         companyUser.textContent = 'Company: ';
 
         let nameCompany = document.createElement('a');
         nameCompany.setAttribute('href', obj.url);
+        nameCompany.setAttribute('target', '_blank')
         nameCompany.textContent = obj.title;
         companyUser.appendChild(nameCompany);
         elem.appendChild(companyUser);
 
         if (obj.industry !== 'n/a') {
             let industry = document.createElement('p');
+            industry.classList.add('list-group-item');
             industry.textContent = `Industry: ${obj.industry}`;
             elem.appendChild(industry);
         };
     };
 
+    function sortFunc(btn, elem, text, i) {
+        if (i == 0) {
+            let indicator = document.createElement('span');
+            indicator.innerHTML = ' &#8595;';
+            btn.appendChild(indicator);
+
+            getApi(urlOrders)
+            .then( response => {
+                let resp = response.concat([]);
+                resp.sort(function(a,b){
+                    if(a.elem > b.elem){
+                        return 1
+                    }
+                    else {
+                        return -1
+                    }
+                });
+                roundArr(resp);
+            });
+            i = i + 1;
+        }
+        else if (i == 1) {
+            btn.innerHTML = text;
+            let indicator = document.createElement('span');
+            indicator.innerHTML = ' &#8593;';
+            btn.appendChild(indicator);
+
+            getApi(urlOrders)
+            .then( response => {
+                let resp = response.concat([]);
+                resp.sort(function(a,b){
+                    if(a.elem > b.elem){
+                        return -1
+                    }
+                    else {
+                        return 1
+                    }
+                });
+                roundArr(resp);
+            });
+            i = i + 1;
+        }
+        else if (i == 2) {
+            btn.innerHTML = text;
+            init();
+            i = 0;
+        }
+    }
+    let k = 0;
+    transactionID.onclick = () => {
+        sortFunc(transactionID, transaction_id, 'Transaction ID', k);
+        k = k + 1;
+        // if (k == 0) {
+        //     let indicator = document.createElement('span');
+        //     indicator.innerHTML = ' &#8595;';
+        //     transactionID.appendChild(indicator);
+
+        //     getApi(urlOrders)
+        //     .then( response => {
+        //         let resp = response.concat([]);
+        //         resp.sort(function(a,b){
+        //             if(a.transaction_id > b.transaction_id){
+        //                 return 1
+        //             }
+        //             else {
+        //                 return -1
+        //             }
+        //         });
+        //         roundArr(resp);
+        //     });
+        //     k = k + 1;
+        // }
+        // else if (k == 1) {
+        //     transactionID.innerHTML = 'Transaction ID';
+        //     let indicator = document.createElement('span');
+        //     indicator.innerHTML = ' &#8593;';
+        //     transactionID.appendChild(indicator);
+
+        //     getApi(urlOrders)
+        //     .then( response => {
+        //         let resp = response.concat([]);
+        //         resp.sort(function(a,b){
+        //             if(a.transaction_id > b.transaction_id){
+        //                 return -1
+        //             }
+        //             else {
+        //                 return 1
+        //             }
+        //         });
+        //         roundArr(resp);
+        //     });
+        //     k = k + 1;
+        // }
+        // else if (k == 2) {
+        //     transactionID.innerHTML = 'Transaction ID';
+        //     init();
+        //     k = 0;
+        // }
+    };
+
+    let j = 0;
+    orderDate.onclick = () => {
+        if (j == 0) {
+            let indicator = document.createElement('span');
+            indicator.innerHTML = ' &#8595;';
+            orderDate.appendChild(indicator);
+
+            getApi(urlOrders)
+            .then( response => {
+                let resp = response.concat([]);
+                resp.sort(function(a,b){
+                    if(a.created_at > b.created_at){
+                        return 1
+                    }
+                    else {
+                        return -1
+                    }
+                });
+                roundArr(resp);
+            });
+            j = j + 1;
+        }
+        else if (j == 1) {
+            orderDate.innerHTML = 'Order Date';
+            let indicator = document.createElement('span');
+            indicator.innerHTML = ' &#8593;';
+            orderDate.appendChild(indicator);
+
+            getApi(urlOrders)
+            .then( response => {
+                let resp = response.concat([]);
+                resp.sort(function(a,b){
+                    if(a.created_at > b.created_at){
+                        return -1
+                    }
+                    else {
+                        return 1
+                    }
+                });
+                roundArr(resp);
+            });
+            j = j + 1;
+        }
+        else if (j == 2) {
+            orderDate.innerHTML = 'Order Date';
+            init();
+            j = 0;
+        }
+    };
+
     init();
+
     // document.getElementById("app").innerHTML = "<h1>Hello WG Forge</h1>";
 }());
