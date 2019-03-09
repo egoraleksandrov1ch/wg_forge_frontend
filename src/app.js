@@ -14,9 +14,12 @@ export default (function () {
     let cardType = document.getElementById('cardType');
     let location = document.getElementById('location');
 
+    let objOrders;
+
     function init() {
         getApi(urlOrders)
 		.then( response => {
+            objOrders = response;
 			roundArr(response);
 		});
         // console.log('hello');
@@ -125,6 +128,7 @@ export default (function () {
         let infoUser = document.createElement('div');
         infoUser.classList.add('user-details');
         infoUser.classList.add('list-group');
+        infoUser.style.position = 'absolute';
         infoUser.style.display = 'none';
         elem.appendChild(infoUser);
 
@@ -202,153 +206,360 @@ export default (function () {
         };
     };
 
-    function sortFunc(btn, elem, text, i) {
-        if (i == 0) {
-            let indicator = document.createElement('span');
-            indicator.innerHTML = ' &#8595;';
-            btn.appendChild(indicator);
+    // function sortFunc(btn, elem) {
+    //     transactionID.innerHTML = 'Transaction ID';
+    //     orderDate.innerHTML = 'Order Date';
+    //     orderAmount.innerHTML = 'Order Amount';
+    //     cardType.innerHTML = 'Card Type';
+    //     location.innerHTML = 'Location';
+    //     userInfo.innerHTML = 'User Info';
 
-            getApi(urlOrders)
-            .then( response => {
-                let resp = response.concat([]);
-                resp.sort(function(a,b){
-                    if(a.elem > b.elem){
-                        return 1
-                    }
-                    else {
-                        return -1
-                    }
-                });
-                roundArr(resp);
-            });
-            i = i + 1;
-        }
-        else if (i == 1) {
-            btn.innerHTML = text;
-            let indicator = document.createElement('span');
-            indicator.innerHTML = ' &#8593;';
-            btn.appendChild(indicator);
+    //     if(k == 0) {
+    //         let indicator = document.createElement('span');
+    //         indicator.innerHTML = ' &#8595;';
+    //         btn.appendChild(indicator);
+    //         let resp = objOrders.concat([]);
+    //         resp.sort(function(a,b){
+    //             console.log(objOrders);
+    //             if(a > b){
+    //                 console.log(a);
+    //                 console.log(b);
+    //                 return 1
+    //             }
+    //             else {
+    //                 return -1
+    //             }
+    //         });
+    //         roundArr(resp);
+    //     }
+    // };
 
-            getApi(urlOrders)
-            .then( response => {
-                let resp = response.concat([]);
-                resp.sort(function(a,b){
-                    if(a.elem > b.elem){
-                        return -1
-                    }
-                    else {
-                        return 1
-                    }
-                });
-                roundArr(resp);
-            });
-            i = i + 1;
-        }
-        else if (i == 2) {
-            btn.innerHTML = text;
-            init();
-            i = 0;
-        }
-    }
     let k = 0;
     transactionID.onclick = () => {
-        sortFunc(transactionID, transaction_id, 'Transaction ID', k);
-        k = k + 1;
-        // if (k == 0) {
-        //     let indicator = document.createElement('span');
-        //     indicator.innerHTML = ' &#8595;';
-        //     transactionID.appendChild(indicator);
-
-        //     getApi(urlOrders)
-        //     .then( response => {
-        //         let resp = response.concat([]);
-        //         resp.sort(function(a,b){
-        //             if(a.transaction_id > b.transaction_id){
-        //                 return 1
-        //             }
-        //             else {
-        //                 return -1
-        //             }
-        //         });
-        //         roundArr(resp);
-        //     });
-        //     k = k + 1;
-        // }
-        // else if (k == 1) {
-        //     transactionID.innerHTML = 'Transaction ID';
-        //     let indicator = document.createElement('span');
-        //     indicator.innerHTML = ' &#8593;';
-        //     transactionID.appendChild(indicator);
-
-        //     getApi(urlOrders)
-        //     .then( response => {
-        //         let resp = response.concat([]);
-        //         resp.sort(function(a,b){
-        //             if(a.transaction_id > b.transaction_id){
-        //                 return -1
-        //             }
-        //             else {
-        //                 return 1
-        //             }
-        //         });
-        //         roundArr(resp);
-        //     });
-        //     k = k + 1;
-        // }
-        // else if (k == 2) {
-        //     transactionID.innerHTML = 'Transaction ID';
-        //     init();
-        //     k = 0;
-        // }
+        // sortFunc(transactionID, 'transaction_id');
+        transactionID.innerHTML = 'Transaction ID';
+        orderDate.innerHTML = 'Order Date';
+        orderAmount.innerHTML = 'Order Amount';
+        cardType.innerHTML = 'Card Type';
+        location.innerHTML = 'Location';
+        userInfo.innerHTML = 'User Info';
+        if (k == 0) {
+            k = k + 1;
+            let indicator = document.createElement('span');
+            indicator.innerHTML = ' &#8595;';
+            transactionID.appendChild(indicator);
+            let resp = objOrders.concat([]);
+            resp.sort((a,b) => {
+                if(a.transaction_id > b.transaction_id){
+                    return 1
+                }
+                else {
+                    return -1
+                }
+            });
+            roundArr(resp);
+        }
+        else if (k == 1) {
+            k = k + 1;
+            let indicator = document.createElement('span');
+            indicator.innerHTML = ' &#8593;';
+            transactionID.appendChild(indicator);
+            let resp = objOrders.concat([]);
+            resp.sort((a,b) => {
+                if(a.transaction_id > b.transaction_id){
+                    return -1
+                }
+                else {
+                    return 1
+                }
+            });
+            roundArr(resp);
+        }
+        else if (k == 2) {
+            k = 0;
+            roundArr(objOrders);
+        }
     };
 
     let j = 0;
     orderDate.onclick = () => {
+        transactionID.innerHTML = 'Transaction ID';
+        orderDate.innerHTML = 'Order Date';
+        orderAmount.innerHTML = 'Order Amount';
+        cardType.innerHTML = 'Card Type';
+        location.innerHTML = 'Location';
+        userInfo.innerHTML = 'User Info';
         if (j == 0) {
+            j = j + 1;
             let indicator = document.createElement('span');
             indicator.innerHTML = ' &#8595;';
             orderDate.appendChild(indicator);
-
-            getApi(urlOrders)
-            .then( response => {
-                let resp = response.concat([]);
-                resp.sort(function(a,b){
-                    if(a.created_at > b.created_at){
-                        return 1
-                    }
-                    else {
-                        return -1
-                    }
-                });
-                roundArr(resp);
+            let resp = objOrders.concat([]);
+            resp.sort((a,b) => {
+                if(a.created_at > b.created_at){
+                    return 1
+                }
+                else {
+                    return -1
+                }
             });
-            j = j + 1;
+            roundArr(resp); 
         }
         else if (j == 1) {
-            orderDate.innerHTML = 'Order Date';
+            j = j + 1;
             let indicator = document.createElement('span');
             indicator.innerHTML = ' &#8593;';
             orderDate.appendChild(indicator);
+            let resp = objOrders.concat([]);
+            resp.sort((a,b) => {
+                if(a.created_at > b.created_at){
+                    return -1
+                }
+                else {
+                    return 1
+                }
+            });
+            roundArr(resp);
+        }
+        else if (j == 2) {
+            j = 0;
+            roundArr(objOrders);
+        }
+    };
 
-            getApi(urlOrders)
-            .then( response => {
-                let resp = response.concat([]);
-                resp.sort(function(a,b){
-                    if(a.created_at > b.created_at){
+    let g = 0;
+    orderAmount.onclick = () => {
+        transactionID.innerHTML = 'Transaction ID';
+        orderDate.innerHTML = 'Order Date';
+        orderAmount.innerHTML = 'Order Amount';
+        cardType.innerHTML = 'Card Type';
+        location.innerHTML = 'Location';
+        userInfo.innerHTML = 'User Info';
+        if (g == 0) {
+            g = g + 1;
+            let indicator = document.createElement('span');
+            indicator.innerHTML = ' &#8595;';
+            orderAmount.appendChild(indicator);
+            let resp = objOrders.concat([]);
+            resp.sort((a,b) => {
+                if(+a.total > +b.total){
+                    return 1
+                }
+                else {
+                    return -1
+                }
+            });
+            roundArr(resp); 
+        }
+        else if (g == 1) {
+            g = g + 1;
+            let indicator = document.createElement('span');
+            indicator.innerHTML = ' &#8593;';
+            orderAmount.appendChild(indicator);
+            let resp = objOrders.concat([]);
+            resp.sort((a,b) => {
+                if(+a.total > +b.total){
+                    return -1
+                }
+                else {
+                    return 1
+                }
+            });
+            roundArr(resp);
+        }
+        else if (g == 2) {
+            g = 0;
+            roundArr(objOrders);
+        }
+    };
+
+    let h = 0;
+    cardType.onclick = () => {
+        transactionID.innerHTML = 'Transaction ID';
+        orderDate.innerHTML = 'Order Date';
+        orderAmount.innerHTML = 'Order Amount';
+        cardType.innerHTML = 'Card Type';
+        location.innerHTML = 'Location';
+        userInfo.innerHTML = 'User Info';
+        if (h == 0) {
+            h = h + 1;
+            let indicator = document.createElement('span');
+            indicator.innerHTML = ' &#8595;';
+            cardType.appendChild(indicator);
+            let resp = objOrders.concat([]);
+            resp.sort((a,b) => {
+                if(a.card_type > b.card_type){
+                    return 1
+                }
+                else {
+                    return -1
+                }
+            });
+            roundArr(resp); 
+        }
+        else if (h == 1) {
+            h = h + 1;
+            let indicator = document.createElement('span');
+            indicator.innerHTML = ' &#8593;';
+            cardType.appendChild(indicator);
+            let resp = objOrders.concat([]);
+            resp.sort((a,b) => {
+                if(a.card_type > b.card_type){
+                    return -1
+                }
+                else {
+                    return 1
+                }
+            });
+            roundArr(resp);
+        }
+        else if (h == 2) {
+            h = 0;
+            roundArr(objOrders);
+        }
+    };
+
+    let f = 0;
+    location.onclick = () => {
+        transactionID.innerHTML = 'Transaction ID';
+        orderDate.innerHTML = 'Order Date';
+        orderAmount.innerHTML = 'Order Amount';
+        cardType.innerHTML = 'Card Type';
+        location.innerHTML = 'Location';
+        userInfo.innerHTML = 'User Info';
+        if (f == 0) {
+            f = f + 1;
+            let indicator = document.createElement('span');
+            indicator.innerHTML = ' &#8595;';
+            location.appendChild(indicator);
+            let resp = objOrders.concat([]);
+            resp.sort((a,b) => {
+                if(a.order_country > b.order_country){
+                    return 1
+                }
+                else if (a.order_country < b.order_country) {
+                    return -1
+                }
+                else if (a.order_country == b.order_country) {
+                    if (a.order_ip > b.order_ip) {
+                        return 1
+                    }
+                    else {
+                        return -1 
+                    }
+                }
+            });
+            roundArr(resp); 
+        }
+        else if (f == 1) {
+            f = f + 1;
+            let indicator = document.createElement('span');
+            indicator.innerHTML = ' &#8593;';
+            location.appendChild(indicator);
+            let resp = objOrders.concat([]);
+            resp.sort((a,b) => {
+                if(a.order_country > b.order_country){
+                    return -1
+                }
+                else if(a.order_country < b.order_country) {
+                    return 1
+                }
+                else if (a.order_country == b.order_country) {
+                    if (a.order_ip > b.order_ip) {
                         return -1
                     }
                     else {
+                        return 1 
+                    }
+                }
+            });
+            roundArr(resp);
+        }
+        else if (f == 2) {
+            f = 0;
+            roundArr(objOrders);
+        }
+    };
+
+    let p = 0;
+    userInfo.onclick = () => {
+        transactionID.innerHTML = 'Transaction ID';
+        orderDate.innerHTML = 'Order Date';
+        orderAmount.innerHTML = 'Order Amount';
+        cardType.innerHTML = 'Card Type';
+        location.innerHTML = 'Location';
+        userInfo.innerHTML = 'User Info';
+        let lines = document.getElementById('lines');
+        lines.innerHTML = '';
+        if (p == 0) {
+            p = p + 1;
+            let indicator = document.createElement('span');
+            indicator.innerHTML = ' &#8595;';
+            userInfo.appendChild(indicator);
+            getApi(urlUsers)
+            .then( response => {
+                let newArr = response.concat([]);
+                newArr.sort( (a,b) => {
+                    if (a.first_name > b.first_name) {
                         return 1
                     }
+                    else if (a.first_name < b.first_name) {
+                        return -1
+                    }
+                    else if (a.first_name == b.first_name) {
+                        if (a.last_name > b.last_name) {
+                            return 1
+                        }
+                        else {
+                            return -1
+                        }
+                    }
                 });
-                roundArr(resp);
+                for (let i = 0; i < newArr.length; i++) {
+                    for (let q = 0; q < objOrders.length; q++) {
+                        if (newArr[i].id == objOrders[q].user_id) {
+                            constructorTable(objOrders, q);
+                        }
+                    }
+                };
             });
-            j = j + 1;
         }
-        else if (j == 2) {
-            orderDate.innerHTML = 'Order Date';
-            init();
-            j = 0;
+        else if (p == 1) {
+            p = p + 1;
+            let indicator = document.createElement('span');
+            indicator.innerHTML = ' &#8593;';
+            userInfo.appendChild(indicator);
+            getApi(urlUsers)
+            .then( response => {
+                let newArr = response.concat([]);
+                newArr.sort( (a,b) => {
+                    if (a.first_name > b.first_name) {
+                        return -1
+                    }
+                    else if (a.first_name < b.first_name) {
+                        return 1
+                    }
+                    else if (a.first_name == b.first_name) {
+                        if (a.last_name > b.last_name) {
+                            return -1
+                        }
+                        else {
+                            return 1
+                        }
+                    }
+                });
+                for (let i = 0; i < newArr.length; i++) {
+                    for (let q = 0; q < objOrders.length; q++) {
+                        if (newArr[i].id == objOrders[q].user_id) {
+                            constructorTable(objOrders, q);
+                        }
+                    }
+                };
+            });
+        }
+        else if (p == 2) {
+            p = 0;
+            roundArr(objOrders);
         }
     };
 
