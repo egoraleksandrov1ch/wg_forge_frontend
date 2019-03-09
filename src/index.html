@@ -10,7 +10,7 @@
 </head>
 <body>
     <div id="app">
-        <table class="table">
+        <table class="table table-bordered">
             <thead class="thead-dark">
                 <tr>
                     <th id="transactionID" style="cursor: pointer">Transaction ID</th>
@@ -22,9 +22,8 @@
                     <th id="location" style="cursor: pointer">Location</th>
                 </tr>
             </thead>
-            <tbody id="lines">
-               
-            </tbody>
+            <tfoot id="statistics" class="table-info"></tfoot>
+            <tbody id="lines"></tbody>
         </table>
     </div>
 </body>

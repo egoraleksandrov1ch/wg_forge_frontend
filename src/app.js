@@ -20,7 +20,7 @@ export default (function () {
         getApi(urlOrders)
 		.then( response => {
             objOrders = response;
-			roundArr(response);
+            roundArr(response);
 		});
         // console.log('hello');
     };
@@ -45,7 +45,7 @@ export default (function () {
     function roundArr(obj) {
         let lines = document.getElementById('lines');
         lines.innerHTML = '';
-
+        constructorStatistics(obj);
         for(let i = 0; i <= obj.length; i++) {
             constructorTable(obj, i);
         };  
@@ -205,6 +205,132 @@ export default (function () {
             elem.appendChild(industry);
         };
     };
+
+    function constructorStatistics(obj) {
+        let statistics = document.getElementById('statistics');
+        let lineOrdersCount = document.createElement('tr');
+        statistics.appendChild(lineOrdersCount);
+
+        let cellOneStatistics = document.createElement('td');
+        cellOneStatistics.setAttribute('scope', 'row');
+        cellOneStatistics.textContent = 'Orders Count';
+        lineOrdersCount.appendChild(cellOneStatistics);
+        
+        let cellTwoStatistics = document.createElement('td');
+        cellTwoStatistics.setAttribute('colspan', '6');
+        cellTwoStatistics.textContent = obj.length;
+        lineOrdersCount.appendChild(cellTwoStatistics);
+
+        let ordersTotal = 0;
+        for (let i = 0; i < obj.length; i++) {
+            ordersTotal = ordersTotal + +obj[i].total;
+        }
+
+        let lineOrdersTotal = document.createElement('tr');
+        statistics.appendChild(lineOrdersTotal);
+
+        let cellThreeStatistics = document.createElement('td');
+        cellThreeStatistics.setAttribute('scope', 'row');
+        cellThreeStatistics.textContent = 'Orders Total';
+        lineOrdersTotal.appendChild(cellThreeStatistics);
+
+        let cellFourStatistics = document.createElement('td');
+        cellFourStatistics.setAttribute('colspan', '6');
+        cellFourStatistics.textContent = `$ ${Math.round(ordersTotal)}`;
+        lineOrdersTotal.appendChild(cellFourStatistics);
+
+        let objCopy = obj.concat([]);
+        objCopy.sort( (a,b) => {
+            if(+a.total > +b.total){
+                return 1
+            }
+            else {
+                return -1
+            } 
+        });
+        let medianValue = 0;
+        if (objCopy.length%2 !== 0) {
+            let item = objCopy.length / 2;
+            medianValue = objCopy[item].total;
+        }
+        else if (objCopy.length%2 == 0) {
+            let item = objCopy.length / 2 - 1;
+            let itemCopy = objCopy.length / 2;
+            medianValue = (+objCopy[item].total + +objCopy[itemCopy].total) / 2;
+        }
+
+        let lineMedianValue = document.createElement('tr');
+        statistics.appendChild(lineMedianValue);
+
+        let cellFiveStatistics = document.createElement('td');
+        cellFiveStatistics.setAttribute('scope', 'row');
+        cellFiveStatistics.textContent = 'Median Value';
+        lineMedianValue.appendChild(cellFiveStatistics);
+
+        let cellSixStatistics = document.createElement('td');
+        cellSixStatistics.setAttribute('colspan', '6');
+        cellSixStatistics.textContent = `$ ${medianValue}`;
+        lineMedianValue.appendChild(cellSixStatistics);
+
+        let averageCheck = +ordersTotal / +obj.length; 
+
+        let lineAverageCheck = document.createElement('tr');
+        statistics.appendChild(lineAverageCheck);
+
+        let cellSevenStatistics = document.createElement('td');
+        cellSevenStatistics.setAttribute('scope', 'row');
+        cellSevenStatistics.textContent = 'Average Check';
+        lineAverageCheck.appendChild(cellSevenStatistics);
+
+        let cellEightStatistics = document.createElement('td');
+        cellEightStatistics.setAttribute('colspan', '6');
+        cellEightStatistics.textContent = `$ ${Math.round(averageCheck)}`;
+        lineAverageCheck.appendChild(cellEightStatistics);
+
+        let averageCheckFemale = 0;
+        let averageCheckMale = 0;
+        getApi(urlUsers)
+        .then( response => {
+            for (let i = 0; i < obj.length; i++) {
+                for(let q = 0; q < response.length; q++) {
+                    if (obj[i].user_id == response[q].id && response[q].gender == 'Female') {
+                        averageCheckFemale = averageCheckFemale + +obj[i].total;
+                    }
+                    else if (obj[i].user_id == response[q].id && response[q].gender == 'Male') {
+                        averageCheckMale = averageCheckMale + +obj[i].total;
+                    }
+                };
+            };
+            cellTenStatistics.textContent = `$ ${Math.round(averageCheckFemale)}`;
+            cellTwelveStatistics.textContent = `$ ${Math.round(averageCheckMale)}`;
+        });
+
+        let lineAverageCheckFemale = document.createElement('tr');
+        statistics.appendChild(lineAverageCheckFemale);
+
+        let cellNineStatistics = document.createElement('td');
+        cellNineStatistics.setAttribute('scope', 'row');
+        cellNineStatistics.textContent = 'Average Check (Female)';
+        lineAverageCheckFemale.appendChild(cellNineStatistics);
+
+        let cellTenStatistics = document.createElement('td');
+        cellTenStatistics.setAttribute('colspan', '6');
+        lineAverageCheckFemale.appendChild(cellTenStatistics);
+
+        let lineAverageCheckMale = document.createElement('tr');
+        statistics.appendChild(lineAverageCheckMale);
+
+        let cellElevenStatistics = document.createElement('td');
+        cellElevenStatistics.setAttribute('scope', 'row');
+        cellElevenStatistics.textContent = 'Average Check (Male)';
+        lineAverageCheckMale.appendChild(cellElevenStatistics);
+
+        let cellTwelveStatistics = document.createElement('td');
+        cellTwelveStatistics.setAttribute('colspan', '6');
+        lineAverageCheckMale.appendChild(cellTwelveStatistics);
+    };
+
+
 
     // function sortFunc(btn, elem) {
     //     transactionID.innerHTML = 'Transaction ID';
