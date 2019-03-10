@@ -74,7 +74,7 @@ export default (function () {
         cellTwo.classList.add('user_data');
         getApi(urlUsers)
 		.then( response => {
-			roundUsers(response, obj[i].user_id, cellTwo);
+            roundUsers(response, obj[i].user_id, cellTwo);
 		});
         line.appendChild(cellTwo);
 
@@ -381,7 +381,6 @@ export default (function () {
                 // console.log('что-то нашло');
             }
         };
-        
         roundArr(newArr);
     };
 
