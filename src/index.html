@@ -10,8 +10,16 @@
 </head>
 <body>
     <div id="app">
-        <table class="table table-bordered">
+        <table class="table">
             <thead class="thead-dark">
+                <tr>
+                    <th scope='row'>
+                        Search:
+                    </th>
+                    <th colspan="6">
+                        <input type="text" id="search" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" value="">
+                    </th>
+                </tr>
                 <tr>
                     <th id="transactionID" style="cursor: pointer">Transaction ID</th>
                     <th id="userInfo" style="cursor: pointer">User Info</th>

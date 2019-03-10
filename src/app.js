@@ -13,6 +13,7 @@ export default (function () {
     let orderAmount = document.getElementById('orderAmount');
     let cardType = document.getElementById('cardType');
     let location = document.getElementById('location');
+    let search = document.getElementById('search');
 
     let objOrders;
 
@@ -22,7 +23,6 @@ export default (function () {
             objOrders = response;
             roundArr(response);
 		});
-        // console.log('hello');
     };
 
     function getApi(url) {
@@ -76,7 +76,6 @@ export default (function () {
 		.then( response => {
 			roundUsers(response, obj[i].user_id, cellTwo);
 		});
-        // cellTwo.textContent = obj[i].user_id;
         line.appendChild(cellTwo);
 
         let cellThree = document.createElement('td');
@@ -111,12 +110,11 @@ export default (function () {
         let cellSeven = document.createElement('td');
         cellSeven.textContent = `${obj[i].order_country} (${obj[i].order_ip})`;
         line.appendChild(cellSeven);
-        // console.log(cellTwo);
     };
 
     function constructorUser(obj, elem) {
         let userLink = document.createElement('a');
-        userLink.href = '#';
+        userLink.href = '#userLink';
         if (obj.gender == 'Male') {
             userLink.textContent = `Mr. ${obj.first_name} ${obj.last_name}`;
         }
@@ -208,6 +206,7 @@ export default (function () {
 
     function constructorStatistics(obj) {
         let statistics = document.getElementById('statistics');
+        statistics.innerHTML = '';
         let lineOrdersCount = document.createElement('tr');
         statistics.appendChild(lineOrdersCount);
 
@@ -218,7 +217,12 @@ export default (function () {
         
         let cellTwoStatistics = document.createElement('td');
         cellTwoStatistics.setAttribute('colspan', '6');
-        cellTwoStatistics.textContent = obj.length;
+        if (obj.length == 0) {
+            cellTwoStatistics.textContent = 'n/a';
+        }
+        else {
+            cellTwoStatistics.textContent = obj.length;
+        }
         lineOrdersCount.appendChild(cellTwoStatistics);
 
         let ordersTotal = 0;
@@ -236,7 +240,12 @@ export default (function () {
 
         let cellFourStatistics = document.createElement('td');
         cellFourStatistics.setAttribute('colspan', '6');
-        cellFourStatistics.textContent = `$ ${Math.round(ordersTotal)}`;
+        if (obj.length == 0) {
+            cellFourStatistics.textContent = 'n/a';
+        }
+        else {
+            cellFourStatistics.textContent = `$ ${Math.round(ordersTotal)}`;
+        }
         lineOrdersTotal.appendChild(cellFourStatistics);
 
         let objCopy = obj.concat([]);
@@ -249,13 +258,17 @@ export default (function () {
             } 
         });
         let medianValue = 0;
-        if (objCopy.length%2 !== 0) {
-            let item = objCopy.length / 2;
+        if (objCopy.length == 1) {
+            medianValue = objCopy.total;
+        }
+        else if (objCopy.length%2 !== 0) {
+            let item = objCopy.length / 2 + 0.5;
             medianValue = objCopy[item].total;
         }
-        else if (objCopy.length%2 == 0) {
+        else if (objCopy.length%2 == 0 && objCopy.length !== 0) {
             let item = objCopy.length / 2 - 1;
             let itemCopy = objCopy.length / 2;
+            // console.log(objCopy);
             medianValue = (+objCopy[item].total + +objCopy[itemCopy].total) / 2;
         }
 
@@ -269,11 +282,15 @@ export default (function () {
 
         let cellSixStatistics = document.createElement('td');
         cellSixStatistics.setAttribute('colspan', '6');
-        cellSixStatistics.textContent = `$ ${medianValue}`;
+        if (obj.length == 0) {
+            cellSixStatistics.textContent = 'n/a';
+        }
+        else {
+            cellSixStatistics.textContent = `$ ${medianValue}`;
+        }
         lineMedianValue.appendChild(cellSixStatistics);
 
         let averageCheck = +ordersTotal / +obj.length; 
-
         let lineAverageCheck = document.createElement('tr');
         statistics.appendChild(lineAverageCheck);
 
@@ -284,7 +301,12 @@ export default (function () {
 
         let cellEightStatistics = document.createElement('td');
         cellEightStatistics.setAttribute('colspan', '6');
-        cellEightStatistics.textContent = `$ ${Math.round(averageCheck)}`;
+        if (obj.length == 0) {
+            cellEightStatistics.textContent = 'n/a';
+        }
+        else {
+            cellEightStatistics.textContent = `$ ${Math.round(averageCheck)}`;
+        }
         lineAverageCheck.appendChild(cellEightStatistics);
 
         let averageCheckFemale = 0;
@@ -301,8 +323,14 @@ export default (function () {
                     }
                 };
             };
-            cellTenStatistics.textContent = `$ ${Math.round(averageCheckFemale)}`;
-            cellTwelveStatistics.textContent = `$ ${Math.round(averageCheckMale)}`;
+            if (obj.length == 0) {
+                cellTenStatistics.textContent = 'n/a';
+                cellTwelveStatistics.textContent = 'n/a';
+            }
+            else {
+                cellTenStatistics.textContent = `$ ${Math.round(averageCheckFemale)}`;
+                cellTwelveStatistics.textContent = `$ ${Math.round(averageCheckMale)}`;
+            }
         });
 
         let lineAverageCheckFemale = document.createElement('tr');
@@ -329,6 +357,35 @@ export default (function () {
         cellTwelveStatistics.setAttribute('colspan', '6');
         lineAverageCheckMale.appendChild(cellTwelveStatistics);
     };
+
+    
+     
+    search.onkeyup = (e) => {
+        let newArr = [];
+        let lines = document.getElementById('lines');
+        lines.innerHTML = '';
+        const text = search.value;
+        for(let i = 0; i < objOrders.length; i++) {
+            let country = `${objOrders[i].order_country} (${objOrders[i].order_ip})`;
+            if (objOrders[i].transaction_id.indexOf(text) === -1 && objOrders[i].total.indexOf(text) === -1 && objOrders[i].card_type.indexOf(text) === -1 && country.indexOf(text) === -1) {
+                // console.log('ничего не нашло');
+                let line = document.createElement('tr');
+                lines.appendChild(line);
+                let cellOne = document.createElement('td');
+                cellOne.setAttribute('colspan', '7');
+                cellOne.textContent = 'Nothing found';
+                line.appendChild(cellOne);
+            } 
+            else {
+                newArr.push(objOrders[i]);
+                // console.log('что-то нашло');
+            }
+        };
+        
+        roundArr(newArr);
+    };
+
+ 
 
 
 
