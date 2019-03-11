@@ -1,21 +1,23 @@
 // this is an example of improting data from JSON
 // import 'orders' from '../data/orders.JSON';
+import {getApi} from './getapi';
 
 export default (function () {
 
-    let urlOrders = 'http://localhost:9000/api/orders.json';
-    let urlUsers = 'http://localhost:9000/api/users.json';
-    let urlCompanies = 'http://localhost:9000/api/companies.json';
+    const urlOrders = 'http://localhost:9000/api/orders.json';
+    const urlUsers = 'http://localhost:9000/api/users.json';
+    const urlCompanies = 'http://localhost:9000/api/companies.json';
 
-    let transactionID = document.getElementById('transactionID');
-    let userInfo = document.getElementById('userInfo');
-    let orderDate = document.getElementById('orderDate');
-    let orderAmount = document.getElementById('orderAmount');
-    let cardType = document.getElementById('cardType');
-    let location = document.getElementById('location');
-    let search = document.getElementById('search');
+    const transactionID = document.getElementById('transactionID');
+    const userInfo = document.getElementById('userInfo');
+    const orderDate = document.getElementById('orderDate');
+    const orderAmount = document.getElementById('orderAmount');
+    const cardType = document.getElementById('cardType');
+    const location = document.getElementById('location');
+    const search = document.getElementById('search');
 
     let objOrders;
+    let objUsers;
 
     function init() {
         getApi(urlOrders)
@@ -25,30 +27,23 @@ export default (function () {
 		});
     };
 
-    function getApi(url) {
-        return new Promise(function(resolve, reject) {
-            let req = new XMLHttpRequest();
-            req.onload = () => {
-                if (req.status == 200) {
-                    resolve(req.response);
-                }
-                else {
-                    reject(req.status);
-                }
-            };
-            req.open('GET', url, true);
-            req.responseType = 'json';
-            req.send();
-        }); 
-    };
-
     function roundArr(obj) {
         let lines = document.getElementById('lines');
         lines.innerHTML = '';
         constructorStatistics(obj);
-        for(let i = 0; i <= obj.length; i++) {
-            constructorTable(obj, i);
-        };  
+        if (obj.length == 0 ) {
+            let line = document.createElement('tr');
+            lines.appendChild(line);
+            let cellOne = document.createElement('td');
+            cellOne.setAttribute('colspan', '7');
+            cellOne.textContent = 'Nothing found';
+            line.appendChild(cellOne);
+        }
+        else {
+            for(let i = 0; i <= obj.length; i++) {
+                constructorTable(obj, i);
+            }; 
+        }
     };
 
     function roundUsers(obj, id, elem) {
@@ -368,13 +363,7 @@ export default (function () {
         for(let i = 0; i < objOrders.length; i++) {
             let country = `${objOrders[i].order_country} (${objOrders[i].order_ip})`;
             if (objOrders[i].transaction_id.indexOf(text) === -1 && objOrders[i].total.indexOf(text) === -1 && objOrders[i].card_type.indexOf(text) === -1 && country.indexOf(text) === -1) {
-                // console.log('ничего не нашло');
-                let line = document.createElement('tr');
-                lines.appendChild(line);
-                let cellOne = document.createElement('td');
-                cellOne.setAttribute('colspan', '7');
-                cellOne.textContent = 'Nothing found';
-                line.appendChild(cellOne);
+        
             } 
             else {
                 newArr.push(objOrders[i]);
