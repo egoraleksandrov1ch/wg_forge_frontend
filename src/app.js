@@ -1,6 +1,7 @@
 // this is an example of improting data from JSON
 // import 'orders' from '../data/orders.JSON';
 import {getApi} from './getapi';
+import {sortFunc} from './sortfunc';
 
 export default (function () {
 
